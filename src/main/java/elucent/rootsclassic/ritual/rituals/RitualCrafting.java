@@ -21,6 +21,11 @@ public class RitualCrafting extends RitualBase {
   }
 
   @Override
+  public ItemStack getRecipeOutput() {
+    return result;
+  }
+
+  @Override
   public void doEffect(World world, BlockPos pos, List<ItemStack> inventory, List<ItemStack> incenses) {
     // if (Util.itemListsMatchWithSize(inventory, this.ingredients)) {
     ItemStack toSpawn = result.copy();

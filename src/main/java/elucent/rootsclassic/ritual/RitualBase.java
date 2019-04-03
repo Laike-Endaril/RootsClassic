@@ -2,20 +2,27 @@ package elucent.rootsclassic.ritual;
 
 import java.util.ArrayList;
 import java.util.List;
+import elucent.rootsclassic.Const;
 import elucent.rootsclassic.RegistryManager;
 import elucent.rootsclassic.Roots;
 import elucent.rootsclassic.Util;
 import elucent.rootsclassic.block.brazier.TileEntityBrazier;
 import net.minecraft.block.Block;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public abstract class RitualBase {
+public abstract class RitualBase extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 
+  private static final int MAX_SIZE = 3;
   private static final int RADIUS = 4;
+  //private NonNullList<ItemStack> recipeInput = NonNullList.withSize(TileEntityHydrator.RECIPE_SIZE, ItemStack.EMPTY);// new ItemStack[4];
   private ArrayList<Block> blocks = new ArrayList<Block>();
   private ArrayList<BlockPos> positionsRelative = new ArrayList<BlockPos>();
   private List<ItemStack> incenses = new ArrayList<ItemStack>();
@@ -30,10 +37,23 @@ public abstract class RitualBase {
       throw new IllegalArgumentException("No duplicate names for rituals");
     }
     this.name = parName;
+    setRegistryName(new ResourceLocation(Const.MODID, "ritual_" + name));
     setPrimaryColor(r, g, b);
     setSecondaryColor(r, g, b);
     setLevel(level);
   }
+
+
+  @Override
+  public ItemStack getRecipeOutput() {
+    return ItemStack.EMPTY;
+  }
+
+  @Override
+  public ItemStack getCraftingResult(InventoryCrafting inv) {
+    return getRecipeOutput();
+  }
+
 
   public void setLevel(int level) {
     if (level < 0 || level > 2) {
@@ -69,7 +89,7 @@ public abstract class RitualBase {
   }
 
   public RitualBase addIngredient(ItemStack i) {
-    getIngredients().add(i);
+    getIngredientsList().add(i);
     return this;
   }
 
@@ -79,7 +99,7 @@ public abstract class RitualBase {
   }
 
   public boolean doIngredientsMatch(RitualBase ritual) {
-    return Util.itemListsMatch(this.getIngredients(), ritual.getIngredients());
+    return Util.itemListsMatch(this.getIngredientsList(), ritual.getIngredientsList());
   }
 
   public abstract void doEffect(World world, BlockPos pos, List<ItemStack> inventory, List<ItemStack> incenses);
@@ -131,7 +151,7 @@ public abstract class RitualBase {
   public String toString() {
     //this.getName() + System.lineSeparator() +
     String s = "[A] ";
-    for (ItemStack mat : this.getIngredients()) {
+    for (ItemStack mat : this.getIngredientsList()) {
       s += mat.getDisplayName() + "; ";
     }
     s += System.lineSeparator() + "[I] ";
@@ -141,13 +161,34 @@ public abstract class RitualBase {
     return s;
   }
 
-  public List<ItemStack> getIngredients() {
+  @Override
+  public boolean matches(InventoryCrafting inv, World worldIn) {
+    List<ItemStack> input = new ArrayList<>();
+    for (int i = 0; i < inv.getSizeInventory(); i++) {
+      ItemStack in = inv.getStackInSlot(i);
+      if (in.isEmpty() == false)
+        input.add(in);
+    }
+    return matches(input);
+  }
+
+  /**
+   * use for altar.getInventory()
+   * 
+   * @param input
+   * @return
+   */
+  public boolean matches(List<ItemStack> input) {
+    return Util.itemListsMatchWithSize(this.getIngredientsList(), input);
+  }
+
+  public List<ItemStack> getIngredientsList() {
     return ingredients;
   }
 
   public void setIngredients(List<ItemStack> ingredients)
       throws IllegalArgumentException {
-    if (ingredients.size() == 0 || ingredients.size() > 3) {
+    if (ingredients.size() == 0 || ingredients.size() > MAX_SIZE) {
       throw new IllegalArgumentException("Invalid ritual ingredients, must be in range [1,3]");
     }
     this.ingredients = ingredients;
@@ -210,4 +251,10 @@ public abstract class RitualBase {
   public String getName() {
     return name;
   }
+
+  @Override
+  public boolean canFit(int width, int height) {
+    return width + height <= MAX_SIZE;
+  }
+
 }

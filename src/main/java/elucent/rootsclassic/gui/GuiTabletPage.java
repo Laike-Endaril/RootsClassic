@@ -204,8 +204,8 @@ public class GuiTabletPage extends GuiScreen {
           }
           this.drawTexturedModalRect(basePosX + 93 + xShift, basePosY + 153 + yShift, u, v, 16, 16);
         }
-        for (int i = 0; i < page.altarRecipe.getIngredients().size(); i++) {
-          slots.add(new GuiSlotInstance(page.altarRecipe.getIngredients().get(i), (int) basePosX + 64 + 24 * i, (int) basePosY + 56));
+        for (int i = 0; i < page.altarRecipe.getIngredientsList().size(); i++) {
+          slots.add(new GuiSlotInstance(page.altarRecipe.getIngredientsList().get(i), (int) basePosX + 64 + 24 * i, (int) basePosY + 56));
         }
         for (int i = 0; i < page.altarRecipe.getIncenses().size(); i++) {
           slots.add(new GuiSlotInstance(page.altarRecipe.getIncenses().get(i), (int) basePosX + 76 + 16 * i, (int) basePosY + 88));

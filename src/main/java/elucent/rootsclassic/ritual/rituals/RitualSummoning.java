@@ -24,7 +24,7 @@ public class RitualSummoning extends RitualBase {
 
   @Override
   public void doEffect(World world, BlockPos pos, List<ItemStack> inventory, List<ItemStack> incenses) {
-    if (Util.itemListsMatchWithSize(inventory, this.getIngredients())) {
+    if (Util.itemListsMatchWithSize(inventory, this.getIngredientsList())) {
       EntityCreature toSpawn;
       try {
         toSpawn = (EntityCreature) result.getConstructor(World.class).newInstance(world);

@@ -3,7 +3,6 @@ package elucent.rootsclassic.ritual;
 import java.util.ArrayList;
 import elucent.rootsclassic.RegistryManager;
 import elucent.rootsclassic.Roots;
-import elucent.rootsclassic.Util;
 import elucent.rootsclassic.block.altar.TileEntityAltar;
 import elucent.rootsclassic.block.brazier.TileEntityBrazier;
 import elucent.rootsclassic.ritual.rituals.RitualCauseRain;
@@ -52,7 +51,7 @@ public class RitualManager {
       //        }
       //        Roots.logger.info("----");
       //      }
-      if (Util.itemListsMatchWithSize(ritual.getIngredients(), altar.getInventory())) {
+      if (ritual.matches(altar.getInventory())) {
         return ritual;
       }
     }

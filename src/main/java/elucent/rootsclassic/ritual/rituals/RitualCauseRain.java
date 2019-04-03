@@ -18,4 +18,5 @@ public class RitualCauseRain extends RitualBase {
     inventory.clear();
     world.getWorldInfo().setRaining(true);
   }
+
 }
