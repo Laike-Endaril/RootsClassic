@@ -186,7 +186,6 @@ public class RegistryManager {
 
   @SubscribeEvent
   public static void onRegisterRecipeEvent(RegistryEvent.Register<IRecipe> event) {
-    //    event.getRegistry().registerAll(blocks.toArray(new Block[0]));
     ComponentManager.init();
     RitualManager.init();
   }
